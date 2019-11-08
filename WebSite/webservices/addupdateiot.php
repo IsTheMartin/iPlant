@@ -1,33 +1,37 @@
 <?php
 
-    require_once('../config/dbconnect.php');
+require_once('../config/dbconnect.php');
 
-    Class IoTActions{
+class IoTActions
+{
 
-        function addUpdateValues($macaddress, $sensorValue){
-            $dbconn = new DbConnect();
-            $conn = $dbconn.connect();
+    function IoTActions()
+    { }
 
-            if(isset($conn)){
-                try{
-                $stmt = $conn->prepare("call usp_sensoring_addupdate(?,?)");
-                $stmt->bindParam(1,$sensorValue,PDO::PARAM_STR);
-                $stmt->bindValue(2,$macaddress,PDO::PARAM_STR);
+    function addUpdateValues($macaddress, $sensorValue)
+    {
+        $dbconn = new DbConnect();
+        try {
+            $conn = $dbconn->connect();
+            if (isset($conn)) {
+                $stmt = $conn->prepare("call usp_sensorvalue_addupdate(:p_sensorvalue,:p_macaddress)");
+                $stmt->bindParam("p_sensorvalue", $sensorValue);
+                $stmt->bindParam("p_macaddress", $macaddress);
 
                 $stmt->execute();
-                } catch (Exception $ex) {
-                    echo $ex;
-                }
-            } else{
+            } else {
                 echo "Cannot create a connection class.";
             }
+        } catch (Exception $ex) {
+            echo $ex;
         }
-
     }
+}
 
-    if(isset($_REQUEST['sensor']) && isset($_REQUEST['macaddress'])){
-        $iotAction = new IoTActions();
-        $iotAction.addUpdateValues($_REQUEST['sensor'], $_REQUEST['macaddress']);
-    } else {
-        echo "sensor or macaddress has not been set";
-    }
+
+if (isset($_REQUEST['sensor']) && isset($_REQUEST['macaddress'])) {
+    $iotAction = new IoTActions();
+    $iotAction->addUpdateValues($_REQUEST['macaddress'], $_REQUEST['sensor']);
+} else {
+    echo "sensor or macaddress has not been set";
+}

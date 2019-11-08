@@ -6,9 +6,9 @@ class Dbconfig {
     protected $dbName;
 
     function Dbconfig() {
-        $this -> serverName = 'server248.hostinger.mx';
+        $this -> serverName = 'localhost';
         $this -> userName = 'u124375356_iplantdb';
-        $this -> passCode = 'MzFDO6zTwG|hXD*WKt';
+        $this -> passCode = 'ODKTZE!ptKR]0U||YW';
         $this -> dbName = 'u124375356_iplant';
     }
 }

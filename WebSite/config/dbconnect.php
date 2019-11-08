@@ -1,34 +1,40 @@
 <?php
 
-include '../config/config.php';
+include '../config/dbconfig.php';
 
-class DbConnect extends Dbconfig {
+class DbConnect extends Dbconfig
+{
     protected $database;
     protected $hostname;
     protected $username;
     protected $password;
+    protected $sql;
 
-    function DbConnect(){
+    function DbConnect()
+    {
         $dbconn = new Dbconfig();
-        $this -> database = $dbconn -> dbName;
-        $this -> hostname = $dbconn -> serverName;
-        $this -> username = $dbconn -> userName;
-        $this -> password = $dbconn -> passCode;
+        $this->sql = "mysql:host=$dbconn->serverName;dbname=$dbconn->dbName;";
+        $this->username = $dbconn->userName;
+        $this->password = $dbconn->passCode;
     }
 
-    function connect() {
-        $conn = new PDO("mysql:host=$this->hostname;dbname=$this->database", $this->username, $this->password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        return $conn;
+    function connect()
+    {
+        try {
+            $conn = new PDO($this->sql, $this->username, $this->password);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            return $conn;
+        } catch (PDOException $ex) {
+            echo $ex->getMessage();
+        }
     }
 
-    function disconnect(){
-        $this -> database = NULL;
-        $this -> hostname = NULL;
-        $this -> username = NULL;
-        $this -> password = NULL;
+    function disconnect()
+    {
+        $this->database = NULL;
+        $this->hostname = NULL;
+        $this->username = NULL;
+        $this->password = NULL;
     }
 }
-
-?>
